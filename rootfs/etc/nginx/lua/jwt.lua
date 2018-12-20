@@ -85,23 +85,21 @@ function _M.jwk_verify(jwks_json, token_type)
   local valid, reason, jwt_obj = validate_headers_and_load(token_type)
 
   if not valid then
-    ngx.log(ngx.WARN, reason)
-    ngx.exit(ngx.HTTP_UNAUTHORIZED)
+    return false, reason
   end
 
   local c_valid, c_reason, pem = cert_of_kid(jwks, jwt_obj.header.kid)
 
   if not c_valid then
-    ngx.log(ngx.WARN, c_reason)
-    ngx.exit(ngx.HTTP_UNAUTHORIZED)
+    return false, reason
   end
 
   local verified_obj = jwt:verify_jwt_obj(pem, jwt_obj)
 
   if not verified_obj.verified then
-    ngx.log(ngx.WARN, "JWT Verification failed " .. verified_obj.reason)
-    ngx.exit(ngx.HTTP_UNAUTHORIZED)
+    return false, "JWT Verification failed " .. verified_obj.reason
   end
+  return true, nil
 end
 
 return _M
