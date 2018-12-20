@@ -40,6 +40,7 @@ import (
 	"k8s.io/ingress-nginx/internal/ingress/annotations/defaultbackend"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/influxdb"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/ipwhitelist"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/jwt"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/loadbalancing"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/log"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/luarestywaf"
@@ -82,6 +83,7 @@ type Ingress struct {
 	DefaultBackend       *apiv1.Service
 	Denied               error
 	ExternalAuth         authreq.Config
+	Jwt                  jwt.Config
 	Proxy                proxy.Config
 	RateLimit            ratelimit.Config
 	Redirect             redirect.Config
@@ -125,6 +127,7 @@ func NewAnnotationExtractor(cfg resolver.Resolver) Extractor {
 			"CustomHTTPErrors":     customhttperrors.NewParser(cfg),
 			"DefaultBackend":       defaultbackend.NewParser(cfg),
 			"ExternalAuth":         authreq.NewParser(cfg),
+			"Jwt":                  jwt.NewParser(cfg),
 			"Proxy":                proxy.NewParser(cfg),
 			"RateLimit":            ratelimit.NewParser(cfg),
 			"Redirect":             redirect.NewParser(cfg),
