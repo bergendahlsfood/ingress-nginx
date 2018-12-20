@@ -42,14 +42,14 @@ func (a jwt) Parse(ing *extensions.Ingress) (interface{}, error) {
 		e = false
 	}
 
-	rc, err := parser.GetStringAnnotation("jwt-response-contenttype", ing)
+	rc, err := parser.GetStringAnnotation("jwt-response-content-type", ing)
 	if err != nil {
 		rc = "application/json"
 	}
 
 	rd, err := parser.GetStringAnnotation("jwt-response-data", ing)
 	if err != nil {
-		rd = "{\"status\": \"unauthenticated\"}"
+		rd = "{\\\"status\\\": \\\"unauthorized\\\"}"
 	}
 
 	return &Config{e,rc,rd}, nil
