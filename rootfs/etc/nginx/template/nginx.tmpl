@@ -501,6 +501,9 @@ http {
     # nginx caches
     {{ range $cache := (buildCaches $servers) }}
     {{ $cache }}{{ end }}
+    {{ if $cfg.EnableJWT }}
+    {{ buildJWKSCache $cfg }}
+    {{ end  }}
 
     # Global filters
     {{ range $ip := $cfg.BlockCIDRs }}deny {{ trimSpace $ip }};
@@ -1396,7 +1399,21 @@ stream {
             deny all;
 
             rewrite ^(.*)$ {{ $all.Cfg.JWKSUpstreamPath }} break;
+
+            aio off; # https://github.com/openresty/lua-nginx-module/issues/587
+
+            add_header            X-Cache-Status     $upstream_cache_status;
+
+            proxy_cache_min_uses        0;
+            proxy_cache_use_stale       updating;
+            proxy_cache_methods         GET;
+            proxy_cache_valid           200 1m;
+            proxy_cache_key             jwks/{{ $all.Cfg.JWKSUpstream }};
+            proxy_cache_lock            on;
+            proxy_cache                 jwks-{{ $all.Cfg.JWKSUpstream }};
+
             proxy_pass http://{{ $all.Cfg.JWKSUpstream }};
+
         }
         {{ end }}
 
