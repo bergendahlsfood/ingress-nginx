@@ -556,6 +556,12 @@ type Configuration struct {
 	JWKSUpstream string `json:"jwt-jwks-upstream,omitempty"`
 	//
 	JWKSUpstreamPath string `json:"jwt-jwks-upstream-path,omitempty"`
+	//
+	JWKSEnableCache bool `json:"jwt-jwks-enable-cache"`
+	//
+	JWKSCacheTTL string `json:"jwt-jwks-cache-ttl"`
+	//
+	JWKSCacheUseStale string `json:"jwt-jwks-cache-use-stale"`
 }
 
 // NewDefault returns the default nginx configuration
@@ -682,6 +688,9 @@ func NewDefault() Configuration {
 		EnableJWT:                    false,
 		JWKSUpstream:                 "",
 		JWKSUpstreamPath:             "/.well-known/openid-configuration/jwks",
+		JWKSEnableCache:              true,
+		JWKSCacheTTL:                 "10m",
+		JWKSCacheUseStale:            "off",
 	}
 
 	if klog.V(5) {
