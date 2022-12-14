@@ -1000,6 +1000,58 @@ func buildNextUpstream(i, r interface{}) string {
 
 	return strings.Join(nextUpstreamCodes, " ")
 }
+func buildCaches(input interface{}) []string {
+	caches := sets.String{}
+	servers, ok := input.([]*ingress.Server)
+	if !ok {
+		klog.Errorf("expected a '[]*ingress.Server' type but %T was returned", input)
+		return caches.List()
+	}
+	for _, server := range servers {
+		for _, loc := range server.Locations {
+			if !loc.Cache.Enabled {
+				continue
+			}
+			cache := fmt.Sprintf("proxy_cache_path %v levels=%v keys_zone=%v:10m max_size=%v inactive=%v use_temp_path=off;",
+				loc.Cache.Path,
+				loc.Cache.Levels,
+				loc.Cache.Name,
+				loc.Cache.MaxSize,
+				loc.Cache.InactiveTimeout,
+			)
+			if !caches.Has(cache) {
+				caches.Insert(cache)
+			}
+		}
+	}
+	return caches.List()
+}
+
+func buildJWKSCache(input interface{}) string {
+	cfg, ok := input.(config.Configuration)
+	if !ok {
+		klog.Errorf("expected a 'config.Configuration' type but %T was returned", input)
+		return ""
+	}
+	if cfg.JWKSUpstream == "" {
+		klog.Error("expected cfg.JWKUpstream to be a non-empty string")
+		return ""
+	}
+
+	p := fmt.Sprintf("/var/lib/nginx/cache/jwks/%v", cfg.JWKSUpstream)
+	err := os.MkdirAll(p, 0777)
+
+	if err != nil {
+		klog.Errorf("unexpected error creating jwks cache directory %v: %v", p, err)
+		return ""
+	}
+	n := fmt.Sprintf("jwks-%v", cfg.JWKSUpstream)
+
+	return fmt.Sprintf("proxy_cache_path %v levels=1:2 keys_zone=%v:10m max_size=10m inactive=60m use_temp_path=off;",
+		p,
+		n,
+	)
+}
 
 // refer to http://nginx.org/en/docs/syntax.html
 // Nginx differentiates between size and offset

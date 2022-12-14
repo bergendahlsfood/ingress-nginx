@@ -466,6 +466,11 @@ func (l1 *Location) Equal(l2 *Location) bool {
 	}
 
 	if !l1.Mirror.Equal(&l2.Mirror) {
+	if !(&l1.Cache).Equal(&l2.Cache) {
+		return false
+	}
+
+	if !(&l1.Jwt).Equal(&l2.Jwt) {
 		return false
 	}
 

@@ -777,6 +777,20 @@ type Configuration struct {
 	// http://nginx.org/en/docs/ngx_core_module.html#debug_connection
 	// Default: ""
 	DebugConnections []string `json:"debug-connections"`
+	//
+	EnableJWT bool `json:"enable-jwt"`
+	//
+	JWKSUpstream string `json:"jwt-jwks-upstream,omitempty"`
+	//
+	JWKSUpstreamPath string `json:"jwt-jwks-upstream-path,omitempty"`
+	//
+	JWKSEnableCache bool `json:"jwt-jwks-enable-cache"`
+	//
+	JWKSCacheTTL string `json:"jwt-jwks-cache-ttl"`
+	//
+	JWKSCacheUseStale string `json:"jwt-jwks-cache-use-stale"`
+	//
+	PurgeableCaches bool `json:"enable-cache-purge"`
 }
 
 // NewDefault returns the default nginx configuration
@@ -866,8 +880,8 @@ func NewDefault() Configuration {
 		SSLSessionTimeout:                sslSessionTimeout,
 		EnableBrotli:                     false,
 		UseGzip:                          false,
-		UseGeoIP:                         true,
-		UseGeoIP2:                        false,
+		UseGeoIP:                         false,
+		UseGeoIP2:                        true,
 		WorkerProcesses:                  strconv.Itoa(runtime.NumCPU()),
 		WorkerShutdownTimeout:            "240s",
 		VariablesHashBucketSize:          256,
@@ -942,6 +956,13 @@ func NewDefault() Configuration {
 		GlobalRateLimitMemcachedPoolSize:       50,
 		GlobalRateLimitStatucCode:              429,
 		DebugConnections:                       []string{},
+		EnableJWT:                    			false,
+		JWKSUpstream:                 			"",
+		JWKSUpstreamPath:             			"/.well-known/openid-configuration/jwks",
+		JWKSEnableCache:              			true,
+		JWKSCacheTTL:                 			"10m",
+		JWKSCacheUseStale:            			"off",
+		PurgeableCaches:              			false,
 	}
 
 	if klog.V(5).Enabled() {
