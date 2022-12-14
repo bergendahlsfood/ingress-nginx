@@ -1227,54 +1227,8 @@ stream {
             # be careful with `access_by_lua_block` and `satisfy any` directives as satisfy any
             # will always succeed when there's `access_by_lua_block` that does not have any lua code doing `ngx.exit(ngx.DECLINED)`
             # other authentication method such as basic auth or external auth useless - all requests will be allowed.
-            #access_by_lua_block {
-            #}
-
-            {{ if shouldConfigureAccessBlock $all.Cfg.DisableLuaRestyWAF $location.LuaRestyWAF.Mode $location.Jwt.Enabled $all.Cfg.EnableJWT }}
+            {{ if $location.Jwt.Enabled $all.Cfg.EnableJWT }}
             access_by_lua_block {
-                {{ if shouldConfigureLuaRestyWAF $all.Cfg.DisableLuaRestyWAF $location.LuaRestyWAF.Mode }}
-                local lua_resty_waf = require("resty.waf")
-                local waf = lua_resty_waf:new()
-
-                waf:set_option("mode", "{{ $location.LuaRestyWAF.Mode }}")
-                waf:set_option("storage_zone", "waf_storage")
-
-                {{ if $location.LuaRestyWAF.AllowUnknownContentTypes }}
-                waf:set_option("allow_unknown_content_types", true)
-                {{ else }}
-                waf:set_option("allowed_content_types", { "text/html", "text/json", "application/json" })
-                {{ end }}
-
-                waf:set_option("event_log_level", ngx.WARN)
-
-                {{ if gt $location.LuaRestyWAF.ScoreThreshold 0 }}
-                waf:set_option("score_threshold", {{ $location.LuaRestyWAF.ScoreThreshold }})
-                {{ end }}
-
-                {{ if not $location.LuaRestyWAF.ProcessMultipartBody }}
-                waf:set_option("process_multipart_body", false)
-                {{ end }}
-
-                {{ if $location.LuaRestyWAF.Debug }}
-                waf:set_option("debug", true)
-                waf:set_option("event_log_request_arguments", true)
-                waf:set_option("event_log_request_body", true)
-                waf:set_option("event_log_request_headers", true)
-                waf:set_option("req_tid_header", true)
-                waf:set_option("res_tid_header", true)
-                {{ end }}
-
-                {{ range $ruleset := $location.LuaRestyWAF.IgnoredRuleSets }}
-                waf:set_option("ignore_ruleset", "{{ $ruleset }}")
-                {{ end }}
-
-                {{ if gt (len $location.LuaRestyWAF.ExtraRulesetString) 0 }}
-                waf:set_option("add_ruleset_string", "10000_extra_rules", {{ $location.LuaRestyWAF.ExtraRulesetString }})
-                {{ end }}
-
-                waf:exec()
-                {{ end }}
-
                 {{ if (and $location.Jwt.Enabled $all.Cfg.EnableJWT) }}
                 local jwt = require("jwt")
                 local res = ngx.location.capture("/jwks")

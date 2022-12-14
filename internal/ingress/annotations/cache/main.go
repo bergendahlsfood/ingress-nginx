@@ -3,8 +3,9 @@ package cache
 import (
 	"fmt"
 	"os"
-	"k8s.io/klog"
-	extensions "k8s.io/api/extensions/v1beta1"
+
+	// "k8s.io/klog"
+	extensions "k8s.io/api/networking/v1"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/parser"
 	"k8s.io/ingress-nginx/internal/ingress/resolver"
 )
@@ -147,10 +148,10 @@ func (a cache) Parse(ing *extensions.Ingress) (interface{}, error) {
 	err = os.MkdirAll(p, 0777)
 
 	if err != nil {
-		klog.Errorf("unexpected error creating cache directory %v: %v", p, err)
+		// klog.Errorf("unexpected error creating cache directory %v: %v", p, err)
 	}
 
-	klog.Infof("Created cache directory %v", p)
+	// klog.Infof("Created cache directory %v", p)
 
 	return &Config{e, n, ash, it, l, ms, m, mu, p, r, ttl, us, bu}, nil
 
