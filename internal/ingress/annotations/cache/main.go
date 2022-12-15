@@ -3,8 +3,6 @@ package cache
 import (
 	"fmt"
 	"os"
-
-	// "k8s.io/klog"
 	extensions "k8s.io/api/networking/v1"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/parser"
 	"k8s.io/ingress-nginx/internal/ingress/resolver"
