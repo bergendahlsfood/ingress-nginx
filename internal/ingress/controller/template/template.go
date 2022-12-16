@@ -281,6 +281,8 @@ var (
 		"shouldLoadInfluxDBModule":           shouldLoadInfluxDBModule,
 		"buildServerName":                    buildServerName,
 		"buildCorsOriginRegex":               buildCorsOriginRegex,
+		"buildCaches":						  buildCaches,
+		"buildJWKSCache":					  buildJWKSCache,
 	}
 )
 
