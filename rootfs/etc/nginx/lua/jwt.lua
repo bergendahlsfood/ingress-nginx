@@ -3,8 +3,8 @@ local string_sub = string.sub
 local string_find = string.find
 local table_insert = table.insert
 local table_concat = table.concat
-local jwt = require "resty.jwt"
-local cjson = require "cjson"
+local jwt = require("resty.jwt")
+local cjson = require("cjson")
 
 local _M = {}
 
