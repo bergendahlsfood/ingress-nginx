@@ -1040,7 +1040,7 @@ func buildJWKSCache(input interface{}) string {
 		return ""
 	}
 
-	p := fmt.Sprintf("/var/lib/nginx/cache/jwks/%v", cfg.JWKSUpstream)
+	p := fmt.Sprintf("/etc/nginx/cache/jwks/%v", cfg.JWKSUpstream)
 	err := os.MkdirAll(p, 0777)
 
 	if err != nil {

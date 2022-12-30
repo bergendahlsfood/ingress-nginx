@@ -142,7 +142,7 @@ func (a cache) Parse(ing *extensions.Ingress) (interface{}, error) {
 		bu = "off"
 	}
 
-	p := fmt.Sprintf("/var/lib/nginx/cache/%v/%v", ing.Namespace, ing.Name)
+	p := fmt.Sprintf("/etc/nginx/cache/%v/%v", ing.Namespace, ing.Name)
 	n := fmt.Sprintf("%v-%v", ing.Namespace, ing.Name)
 
 	err = os.MkdirAll(p, 0777)

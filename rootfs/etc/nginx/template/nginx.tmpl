@@ -1607,7 +1607,7 @@ stream {
             if ($request_method = PURGE) {
                 content_by_lua_block {
                   local cache_purge = require "cache_purge"
-                  cache_purge.purge("/var/lib/nginx/cache", ngx.var[1], ngx.var[2])
+                  cache_purge.purge("/etc/nginx/cache", ngx.var[1], ngx.var[2])
                 }
            }
         }
