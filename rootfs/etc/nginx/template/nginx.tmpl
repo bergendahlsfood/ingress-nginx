@@ -1227,7 +1227,7 @@ stream {
             # be careful with `access_by_lua_block` and `satisfy any` directives as satisfy any
             # will always succeed when there's `access_by_lua_block` that does not have any lua code doing `ngx.exit(ngx.DECLINED)`
             # other authentication method such as basic auth or external auth useless - all requests will be allowed.
-            {{ if $location.Jwt.Enabled $all.Cfg.EnableJWT }}
+            {{ if (and $location.Jwt.Enabled $all.Cfg.EnableJWT) }}
             access_by_lua_block {
                 {{ if (and $location.Jwt.Enabled $all.Cfg.EnableJWT) }}
                 local jwt = require("jwt")
