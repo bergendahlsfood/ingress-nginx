@@ -19,6 +19,9 @@ RUN apk update \
   && apk upgrade \
   && apk add -U bash \
   && /build.sh
+  
+RUN apk add luarocks
+RUN luarocks install lua-resty-jwt
 
 # Use a multi-stage build
 FROM alpine:3.16.2
