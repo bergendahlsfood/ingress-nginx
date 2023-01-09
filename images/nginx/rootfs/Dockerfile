@@ -36,23 +36,25 @@ COPY --from=builder /usr/local /usr/local
 COPY --from=builder /opt /opt
 COPY --from=builder /etc/nginx /etc/nginx
 
+RUN apk update
+RUN apk add ${LUA_PACKAGE}
+RUN apk add ${LUA_PACKAGE}-dev
+RUN apk add luajit
+RUN apk add luarocks
+RUN apk add build-base git bash zip unzip curl
+RUN ln -s /usr/bin/luarocks-$LUA_VERSION /usr/bin/luarocks
+RUN luarocks install lua-resty-openssl
+RUN luarocks install lua-resty-jwt 0.2.0
+
 RUN apk update \
   && apk upgrade \
   && apk add -U --no-cache \
-  ${LUA_PACKAGE} \
-  ${LUA_PACKAGE}-dev\
-  luajit \
-  luarocks \
-  build-base \
-  git \
-  zip \
-  unzip \
-  curl \
   bash \
   openssl \
   pcre \
   zlib \
   geoip \
+  curl \
   ca-certificates \
   patch \
   yajl \
@@ -63,9 +65,6 @@ RUN apk update \
   dumb-init \
   nano \
   tzdata \
-  && ln -s /usr/bin/luarocks-$LUA_VERSION /usr/bin/luarocks \
-  && luarocks install lua-resty-openssl \
-  && luarocks install lua-resty-jwt 0.2.0 \
   && ln -s /usr/local/nginx/sbin/nginx /sbin/nginx \
   && adduser -S -D -H -u 101 -h /usr/local/nginx \
   -s /sbin/nologin -G www-data -g www-data www-data \
