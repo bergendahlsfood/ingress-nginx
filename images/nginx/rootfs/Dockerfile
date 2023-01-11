@@ -15,9 +15,6 @@ FROM alpine:3.16.2 as builder
 
 COPY . /
 
-ENV LUA_VERSION 5.3
-ENV LUA_PACKAGE lua${LUA_VERSION}
-ENV LUAROCKS_VERSION 3.9.3
 
 RUN apk update \
   && apk upgrade \
@@ -35,16 +32,6 @@ ENV LUA_CPATH="/usr/local/lib/lua/?/?.so;/usr/local/lib/lua/?.so;;"
 COPY --from=builder /usr/local /usr/local
 COPY --from=builder /opt /opt
 COPY --from=builder /etc/nginx /etc/nginx
-
-RUN apk update
-RUN apk add ${LUA_PACKAGE}
-RUN apk add ${LUA_PACKAGE}-dev
-RUN apk add luajit
-RUN apk add luarocks
-RUN apk add build-base git bash zip unzip curl
-RUN ln -s /usr/bin/luarocks-$LUA_VERSION /usr/bin/luarocks
-RUN luarocks install lua-resty-openssl
-RUN luarocks install lua-resty-jwt 0.2.0
 
 RUN apk update \
   && apk upgrade \

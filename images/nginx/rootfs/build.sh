@@ -100,8 +100,8 @@ export LUA_RESTY_CACHE=0.11
 export LUA_RESTY_CORE=0.1.23
 
 # Check for recent changes: TODO COMPARE
-# export LUA_RESTY_JWT_VERSION=v0.2.0
-# export LUA_RESTY_JWT_FILEVERSION=0.2.0
+export LUA_RESTY_JWT_VERSION=v0.2.2
+export LUA_RESTY_JWT_FILEVERSION=0.2.2
 
 # Check for recent changes: https://github.com/cloudflare/lua-resty-cookie/compare/v0.1.0...master
 export LUA_RESTY_COOKIE_VERSION=303e32e512defced053a6484bc0745cf9dc0d39e
@@ -302,8 +302,8 @@ fi
 get_src 0c551d6898f89f876e48730f9b55790d0ba07d5bc0aa6c76153277f63c19489f \
         "https://github.com/openresty/lua-cjson/archive/$LUA_CJSON_VERSION.tar.gz"
 
-# get_src 93b6ecf1310aca67fc2678156e22c1504398ae999c9a334cad44dbab80a8161b \
-#         "https://github.com/cdbattags/lua-resty-jwt/archive/$LUA_RESTY_JWT_VERSION.tar.gz"
+get_src 1111d8201755ebbda3682e7725af51b7c14d95ca9ca3c5ad67c9bd722297d5e2 \
+        "https://github.com/cdbattags/lua-resty-jwt/archive/$LUA_RESTY_JWT_VERSION.tar.gz"
 
 get_src 5ed48c36231e2622b001308622d46a0077525ac2f751e8cc0c9905914254baa4 \
         "https://github.com/cloudflare/lua-resty-cookie/archive/$LUA_RESTY_COOKIE_VERSION.tar.gz"
@@ -693,9 +693,9 @@ cd "$BUILD_PATH/lua-cjson-$LUA_CJSON_VERSION"
 make all
 make install
 
-# cd "$BUILD_PATH/lua-resty-jwt-$LUA_RESTY_JWT_FILEVERSION"
-# make all
-# make install
+cd "$BUILD_PATH/lua-resty-jwt-$LUA_RESTY_JWT_FILEVERSION"
+install -d /usr/local/lib/lua/resty
+install lib/resty/*.lua /usr/local/lib/lua/resty
 
 cd "$BUILD_PATH/lua-resty-cookie-$LUA_RESTY_COOKIE_VERSION"
 make all
