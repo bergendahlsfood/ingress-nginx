@@ -21,10 +21,10 @@ DIR:=$(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
 INIT_BUILDX=$(DIR)/../../hack/init-buildx.sh
 
 # 0.0.0 shouldn't clobber any released builds
-TAG ?= 0.0
-REGISTRY ?= gcr.io/k8s-staging-ingress-nginx
+TAG ?= 1.5
+REGISTRY ?= bfoecomcontainer.azurecr.io
 
-IMAGE = $(REGISTRY)/nginx
+IMAGE = $(REGISTRY)/bergendahls-nginx
 
 # required to enable buildx
 export DOCKER_CLI_EXPERIMENTAL=enabled
