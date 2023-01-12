@@ -120,6 +120,12 @@ export LUA_RESTY_STRING_VERSION=0.15
 # Check for recent changes: https://github.com/openresty/lua-resty-memcached/compare/v0.16...master
 export LUA_RESTY_MEMCACHED_VERSION=0.16
 
+# Check for recent changes: TODO COMPARE
+export LUA_RESTY_JWT_VERSION=v0.2.2
+export LUA_RESTY_JWT_FILEVERSION=0.2.2
+
+export LUA_RESTY_HMAC_VERSION=0.05
+
 # Check for recent changes: https://github.com/openresty/lua-resty-redis/compare/v0.30...master
 export LUA_RESTY_REDIS_VERSION=0.30
 
@@ -277,6 +283,12 @@ get_src 4c1933434572226942c65b2f2b26c8a536ab76aa771a3c7f6c2629faa764976b \
 
 get_src 778fcca851bd69dabfb382dc827d2ee07662f7eca36b5e66e67d5512bad75ef8 \
         "https://github.com/msva/nginx_ajp_module/archive/$NGINX_AJP_VERSION.tar.gz"
+
+get_src 1111d8201755ebbda3682e7725af51b7c14d95ca9ca3c5ad67c9bd722297d5e2 \
+        "https://github.com/cdbattags/lua-resty-jwt/archive/$LUA_RESTY_JWT_VERSION.tar.gz"
+
+get_src a8bb37a5d272545d57fbd1a78be54cca5b96d6c1048e396b137bdacab575fc6a \
+        "https://github.com/jkeys089/lua-resty-hmac/archive/refs/tags/v$LUA_RESTY_HMAC_VERSION.tar.gz"
 
 get_src 5d16e623d17d4f42cc64ea9cfb69ca960d313e12f5d828f785dd227cc483fcbd \
         "https://github.com/openresty/lua-resty-upload/archive/v$LUA_RESTY_UPLOAD_VERSION.tar.gz"
@@ -672,6 +684,13 @@ WITH_MODULES=" \
 make
 make modules
 make install
+
+cd "$BUILD_PATH/lua-resty-hmac-$LUA_RESTY_HMAC_VERSION"
+make install
+
+cd "$BUILD_PATH/lua-resty-jwt-$LUA_RESTY_JWT_FILEVERSION"
+install -d /usr/local/lib/lua/resty
+install lib/resty/*.lua /usr/local/lib/lua/resty
 
 cd "$BUILD_PATH/lua-resty-core-$LUA_RESTY_CORE"
 make install

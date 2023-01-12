@@ -45,6 +45,7 @@ import (
 	"k8s.io/ingress-nginx/internal/ingress/annotations/http2pushpreload"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/influxdb"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/ipwhitelist"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/jwt"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/loadbalancing"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/log"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/mirror"
@@ -114,6 +115,7 @@ type Ingress struct {
 	SSLCipher          sslcipher.Config
 	Logs               log.Config
 	InfluxDB           influxdb.Config
+	Jwt				   jwt.Config
 	ModSecurity        modsecurity.Config
 	Mirror             mirror.Config
 	StreamSnippet      string
@@ -142,6 +144,7 @@ func NewAnnotationExtractor(cfg resolver.Resolver) Extractor {
 			"ExternalAuth":         authreq.NewParser(cfg),
 			"EnableGlobalAuth":     authreqglobal.NewParser(cfg),
 			"HTTP2PushPreload":     http2pushpreload.NewParser(cfg),
+			"Jwt":                  jwt.NewParser(cfg),
 			"Opentracing":          opentracing.NewParser(cfg),
 			"Proxy":                proxy.NewParser(cfg),
 			"ProxySSL":             proxyssl.NewParser(cfg),

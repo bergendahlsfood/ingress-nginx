@@ -31,6 +31,7 @@ import (
 	"k8s.io/ingress-nginx/internal/ingress/annotations/globalratelimit"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/influxdb"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/ipwhitelist"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/jwt"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/log"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/mirror"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/modsecurity"
@@ -354,6 +355,9 @@ type Location struct {
 	// Opentracing allows the global opentracing setting to be overridden for a location
 	// +optional
 	Opentracing opentracing.Config `json:"opentracing"`
+	// jwt
+	// +optional
+	Jwt jwt.Config `json:"jwt"`
 }
 
 // SSLPassthroughBackend describes a SSL upstream server configured
