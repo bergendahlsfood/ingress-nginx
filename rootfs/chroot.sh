@@ -32,7 +32,6 @@ writeDirs=( \
   /chroot/var/lib/nginx/proxy \
   /chroot/var/lib/nginx/scgi \
   /chroot/var/lib/nginx/uwsgi \
-  /chroot/var/lib/nginx/cache \
   /chroot/tmp/nginx
 );
 
