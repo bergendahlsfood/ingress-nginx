@@ -31,6 +31,7 @@ import (
 	"k8s.io/ingress-nginx/internal/ingress/annotations/fastcgi"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/globalratelimit"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/influxdb"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/ipdenylist"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/ipwhitelist"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/jwt"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/log"
@@ -224,6 +225,7 @@ type Server struct {
 // In some cases when more than one annotations is defined a particular order in the execution
 // is required.
 // The chain in the execution order of annotations should be:
+// - Denylist
 // - Whitelist
 // - RateLimit
 // - BasicDigestAuth
@@ -294,6 +296,10 @@ type Location struct {
 	// Rewrite describes the redirection this location.
 	// +optional
 	Rewrite rewrite.Config `json:"rewrite,omitempty"`
+	// Denylist indicates only connections from certain client
+	// addresses or networks are allowed.
+	// +optional
+	Denylist ipdenylist.SourceRange `json:"denylist,omitempty"`
 	// Whitelist indicates only connections from certain client
 	// addresses or networks are allowed.
 	// +optional

@@ -45,6 +45,7 @@ import (
 	"k8s.io/ingress-nginx/internal/ingress/annotations/globalratelimit"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/http2pushpreload"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/influxdb"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/ipdenylist"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/ipwhitelist"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/jwt"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/loadbalancing"
@@ -113,6 +114,7 @@ type Ingress struct {
 	LoadBalancing      string
 	UpstreamVhost      string
 	Whitelist          ipwhitelist.SourceRange
+	Denylist           ipdenylist.SourceRange
 	XForwardedPrefix   string
 	SSLCipher          sslcipher.Config
 	Logs               log.Config
@@ -166,6 +168,7 @@ func NewAnnotationExtractor(cfg resolver.Resolver) Extractor {
 			"LoadBalancing":        loadbalancing.NewParser(cfg),
 			"UpstreamVhost":        upstreamvhost.NewParser(cfg),
 			"Whitelist":            ipwhitelist.NewParser(cfg),
+			"Denylist":             ipdenylist.NewParser(cfg),
 			"XForwardedPrefix":     xforwardedprefix.NewParser(cfg),
 			"SSLCipher":            sslcipher.NewParser(cfg),
 			"Logs":                 log.NewParser(cfg),

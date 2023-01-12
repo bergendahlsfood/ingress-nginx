@@ -141,6 +141,7 @@ test:  ## Run go unit tests.
 		COMMIT_SHA=$(COMMIT_SHA) \
 		REPO_INFO=$(REPO_INFO) \
 		TAG=$(TAG) \
+		GOFLAGS="-buildvcs=false" \
 		test/test.sh
 
 .PHONY: lua-test
@@ -200,7 +201,6 @@ dev-env-stop: ## Deletes local Kubernetes cluster created by kind.
 live-docs: ## Build and launch a local copy of the documentation website in http://localhost:8000
 	@docker build ${PLATFORM_FLAG} ${PLATFORM} \
                   		--no-cache \
-                  		$(MAC_DOCKER_FLAGS) \
                   		 -t ingress-nginx-docs .github/actions/mkdocs
 	@docker run ${PLATFORM_FLAG} ${PLATFORM} --rm -it \
 		-p 8000:8000 \
@@ -240,6 +240,7 @@ release: ensure-buildx clean
 
 	docker buildx build \
 		--no-cache \
+		$(MAC_DOCKER_FLAGS) \
 		--push \
 		--pull \
 		--progress plain \
@@ -252,6 +253,7 @@ release: ensure-buildx clean
 
 	docker buildx build \
 		--no-cache \
+		$(MAC_DOCKER_FLAGS) \
 		--push \
 		--pull \
 		--progress plain \
