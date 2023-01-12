@@ -13,7 +13,7 @@ on:
     inputs:
       run_e2e:
         description: 'Force e2e to run'
-        required: true
+        required: false
         type: boolean
 
 permissions:
@@ -73,6 +73,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: changes
+    if: |
+      (needs.changes.outputs.go == 'true') || (needs.changes.outputs.charts == 'true') || ${{ inputs.run_e2e }} 
+
 
     steps:
 
@@ -81,7 +84,7 @@ jobs:
 
       - name: Set up Go 1.19.2
         id: go
-        uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.2.0
+        uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3.2.0
         with:
           go-version: '1.19.2'
 
@@ -147,7 +150,7 @@ jobs:
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.0.2
 
       - name: Setup Go
-        uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.2.0
+        uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3.2.0
         with:
           go-version: '1.19.2'
 
@@ -186,10 +189,8 @@ jobs:
 
       - name: Create Kubernetes ${{ matrix.k8s }} cluster
         id: kind
-        uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 #v0.5.0
-        with:
-          version: v0.15.0
-          image: kindest/node:${{ matrix.k8s }}
+        run: |
+          kind create cluster --image=kindest/node:${{ matrix.k8s }}
 
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v1
         with:
@@ -236,22 +237,13 @@ jobs:
 
       - name: Create Kubernetes ${{ matrix.k8s }} cluster
         id: kind
-        uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 #v0.5.0
-        with:
-          version: v0.15.0
-          config: test/e2e/kind.yaml
-          image: kindest/node:${{ matrix.k8s }}
+        run: |
+          kind create cluster --image=kindest/node:${{ matrix.k8s }} --config test/e2e/kind.yaml
 
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af # v1
         with:
           name: docker.tar.gz
           failOnError: false
-
-      - name: Prepare cluster for testing
-        uses: azure/setup-helm@f382f75448129b3be48f8121b9857be18d815a82 #v2.1
-        with:
-          version: 'v3.8.0'
-        id: local-path
 
       - name: Load images from cache
         run: |
@@ -267,6 +259,12 @@ jobs:
           kind get kubeconfig > $HOME/.kube/kind-config-kind
           make kind-e2e-test
 
+      - name: Uplaod e2e junit-reports
+        uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: e2e-test-reports-${{ matrix.k8s }}
+          path: 'test/junitreports/report*.xml'
 
   kubernetes-chroot:
     name: Kubernetes chroot
@@ -293,22 +291,13 @@ jobs:
 
       - name: Create Kubernetes ${{ matrix.k8s }} cluster
         id: kind
-        uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 #v0.5.0
-        with:
-          version: v0.15.0
-          config: test/e2e/kind.yaml
-          image: kindest/node:${{ matrix.k8s }}
+        run: |
+          kind create cluster --image=kindest/node:${{ matrix.k8s }} --config test/e2e/kind.yaml
 
       - uses: geekyeggo/delete-artifact@54ab544f12cdb7b71613a16a2b5a37a9ade990af
         with:
           name: docker.tar.gz
           failOnError: false
-
-      - name: Prepare cluster for testing
-        uses: azure/setup-helm@f382f75448129b3be48f8121b9857be18d815a82 #v2.1
-        with:
-          version: 'v3.8.0'
-        id: local-path
 
       - name: Load images from cache
         run: |
@@ -324,6 +313,13 @@ jobs:
         run: |
           kind get kubeconfig > $HOME/.kube/kind-config-kind
           make kind-e2e-test
+      
+      - name: Uplaod e2e junit-reports
+        uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: e2e-test-reports-chroot-${{ matrix.k8s }}
+          path: 'test/junitreports/report*.xml'
 
 
   test-image-build:
@@ -415,15 +411,13 @@ jobs:
       - name: Create Kubernetes cluster
         id: kind
         if: ${{ steps.filter-images.outputs.kube-webhook-certgen == 'true' }}
-        uses: engineerd/setup-kind@aa272fe2a7309878ffc2a81c56cfe3ef108ae7d0 #v0.5.0
-        with:
-          version: v0.15.0
-          image: kindest/node:v1.25.2
+        run: |
+          kind create cluster --image=kindest/node:${{ matrix.k8s }}
 
       - name: Set up Go 1.19.2
         id: go
         if: ${{ steps.filter-images.outputs.kube-webhook-certgen == 'true' }}
-        uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # v3.2.0
+        uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3.2.0
         with:
           go-version: '1.19.2'
 
