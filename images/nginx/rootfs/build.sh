@@ -103,6 +103,8 @@ export LUA_RESTY_CORE=0.1.23
 export LUA_RESTY_JWT_VERSION=v0.2.2
 export LUA_RESTY_JWT_FILEVERSION=0.2.2
 
+export LUA_RESTY_HMAC_VERSION=0.05
+
 # Check for recent changes: https://github.com/cloudflare/lua-resty-cookie/compare/v0.1.0...master
 export LUA_RESTY_COOKIE_VERSION=303e32e512defced053a6484bc0745cf9dc0d39e
 
@@ -304,6 +306,9 @@ get_src 0c551d6898f89f876e48730f9b55790d0ba07d5bc0aa6c76153277f63c19489f \
 
 get_src 1111d8201755ebbda3682e7725af51b7c14d95ca9ca3c5ad67c9bd722297d5e2 \
         "https://github.com/cdbattags/lua-resty-jwt/archive/$LUA_RESTY_JWT_VERSION.tar.gz"
+
+get_src a8bb37a5d272545d57fbd1a78be54cca5b96d6c1048e396b137bdacab575fc6a \
+        "https://github.com/jkeys089/lua-resty-hmac/archive/refs/tags/v$LUA_RESTY_HMAC_VERSION.tar.gz"
 
 get_src 5ed48c36231e2622b001308622d46a0077525ac2f751e8cc0c9905914254baa4 \
         "https://github.com/cloudflare/lua-resty-cookie/archive/$LUA_RESTY_COOKIE_VERSION.tar.gz"
@@ -691,6 +696,9 @@ ln -s $LUA_INCLUDE_DIR /usr/include/lua5.1
 
 cd "$BUILD_PATH/lua-cjson-$LUA_CJSON_VERSION"
 make all
+make install
+
+cd "$BUILD_PATH/lua-resty-hmac-$LUA_RESTY_HMAC_VERSION"
 make install
 
 cd "$BUILD_PATH/lua-resty-jwt-$LUA_RESTY_JWT_FILEVERSION"
